@@ -21,22 +21,24 @@ data224 = []
 data299 = []
 for img, target in tqdm.tqdm(zip(d['data'], d['target']), total=50000):
     img224 = misc.str2img(img)
-    img299 = cv2.resize(img224, (299, 299))
+#    img299 = cv2.resize(img224, (299, 299))
     data224.append(img224)
-    data299.append(img299)
+#    data299.append(img299)
 data_dict224 = dict(
     data = np.array(data224).transpose(0, 3, 1, 2),
     target = d['target']
 )
-data_dict299 = dict(
-    data = np.array(data299).transpose(0, 3, 1, 2),
-    target = d['target']
-)
+#data_dict299 = dict(
+#    data = np.array(data299).transpose(0, 3, 1, 2),
+#    target = d['target']
+#)
 
 if not os.path.exists(args.out_root):
     os.makedirs(args.out_root)
 misc.dump_pickle(data_dict224, os.path.join(args.out_root, 'val224.pkl'))
-misc.dump_pickle(data_dict299, os.path.join(args.out_root, 'val299.pkl'))
+#misc.dump_pickle(data_dict299, os.path.join(args.out_root, 'val299.pkl'))
+
+### We ignore 229 because doing both at once kills our memory. Do one at a time if both are needed.
 
 
 
