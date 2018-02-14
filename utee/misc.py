@@ -175,12 +175,16 @@ def eval_model(model, ds, n_sample=None, ngpu=1, is_imagenet=False):
     if is_imagenet:
         model = ModelWrapper(model)
     model = model.eval()
-    model = torch.nn.DataParallel(model, device_ids=range(ngpu)).cuda()
+    model = torch.nn.DataParallel(model, device_ids=range(ngpu if ngpu > 0 else 1))
+    if ngpu > 0:
+        model = model.cuda()
 
     n_sample = len(ds) if n_sample is None else n_sample
     for idx, (data, target) in enumerate(tqdm.tqdm_notebook(ds, total=n_sample)):
         n_passed += len(data)
-        data =  Variable(torch.FloatTensor(data)).cuda()
+        data =  Variable(torch.FloatTensor(data))
+        if ngpu > 0:
+            data = data.cuda()
         indx_target = torch.LongTensor(target)
         output = model(data)
         bs = output.size(0)
