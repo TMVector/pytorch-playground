@@ -62,6 +62,7 @@ if args.param_bits < 32:
 
         if args.quant_method == 'linear':
             sf = bits - 1. - quant.compute_integral_part(v, overflow_rate=args.overflow_rate)
+            print(f'| {sf}')
             v_quant  = quant.linear_quantize(v, sf, bits=bits)
         elif args.quant_method == 'log':
             v_quant = quant.log_minmax_quantize(v, bits=bits)

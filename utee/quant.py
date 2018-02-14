@@ -23,10 +23,19 @@ def linear_quantize(input, sf, bits):
     bound = math.pow(2.0, bits-1)
     min_val = - bound
     max_val = bound - 1
-    rounded = torch.floor(input / delta + 0.5)
+    #rounded = torch.floor(input / delta + 0.5)
 
-    clipped_value = torch.clamp(rounded, min_val, max_val) * delta
-    return clipped_value
+    #clipped_value = torch.clamp(rounded, min_val, max_val) * delta
+    #return clipped_value
+    
+    x = input.div(delta)
+    x.round_()
+    if isinstance(x, Variable):
+        x.data.clamp_(min_val, max_val)
+    else:
+        x.clamp_(min_val, max_val)
+    x.mul_(delta)
+    return x
 
 def log_minmax_quantize(input, bits):
     assert bits >= 1, bits
