@@ -151,6 +151,7 @@ def md5(s):
 
 def eval_model(model, ds, n_sample=None, ngpu=1, is_imagenet=False):
     import tqdm
+    tqdm.monitor_interval = 0
     import torch
     from torch import nn
     from torch.autograd import Variable
@@ -177,7 +178,7 @@ def eval_model(model, ds, n_sample=None, ngpu=1, is_imagenet=False):
     model = torch.nn.DataParallel(model, device_ids=range(ngpu)).cuda()
 
     n_sample = len(ds) if n_sample is None else n_sample
-    for idx, (data, target) in enumerate(tqdm.tqdm(ds, total=n_sample)):
+    for idx, (data, target) in enumerate(tqdm.tqdm_notebook(ds, total=n_sample)):
         n_passed += len(data)
         data =  Variable(torch.FloatTensor(data)).cuda()
         indx_target = torch.LongTensor(target)
