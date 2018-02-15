@@ -54,6 +54,9 @@ class IMAGENET(object):
             target = self.data_dict['target'][self.idx*self.batch_size:(self.idx+1)*self.batch_size]
             self.idx += 1
             return img, target
+        
+    def reset(self):
+        self.idx = 0
 
 if __name__ == '__main__':
     train_ds, val_ds = get(200)
