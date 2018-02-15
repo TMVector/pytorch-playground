@@ -149,7 +149,7 @@ def md5(s):
     m.update(s)
     return m.hexdigest()
 
-def eval_model(model, ds, n_sample=None, ngpu=1, is_imagenet=False, data_fn=None):
+def eval_model(model, ds, n_sample=None, ngpu=1, is_imagenet=False, data_fn=None, tqdm_fn=None):
     import tqdm
     tqdm.monitor_interval = 0
     import torch
@@ -158,6 +158,8 @@ def eval_model(model, ds, n_sample=None, ngpu=1, is_imagenet=False, data_fn=None
     
     if data_fn is None:
         data_fn = lambda x: x
+    if tqdm_fn is None:
+        tqdm_fn = tqdm.tqdm
 
     class ModelWrapper(nn.Module):
         def __init__(self, model):
@@ -183,7 +185,7 @@ def eval_model(model, ds, n_sample=None, ngpu=1, is_imagenet=False, data_fn=None
         model = model.cuda()
 
     n_sample = len(ds) if n_sample is None else n_sample
-    for idx, (data, target) in enumerate(tqdm.tqdm_notebook(ds, total=n_sample)):
+    for idx, (data, target) in enumerate(tqdm_fn(ds, total=n_sample)):
         n_passed += len(data)
         data = Variable(data_fn(torch.FloatTensor(data)))
         if ngpu > 0:
